@@ -706,12 +706,12 @@
 
         // ⚠️ SOSTITUIRE QUESTA CONFIGURAZIONE CON QUELLA DEL TUO PROGETTO FIREBASE
         const firebaseConfig = {
-            apiKey: "AIzaSyCT6jtg7cdmXFDjYE3x9JJXl1a9pv3cP-c",
-  authDomain: "mns-crm-marchi.firebaseapp.com",
-  projectId: "mns-crm-marchi",
-  storageBucket: "mns-crm-marchi.firebasestorage.app",
-  messagingSenderId: "836576469513",
-  appId: "1:836576469513:web:19d5cc836c33967b980ed8"
+            apiKey: "AIzaSyCT6jtq7cdmXFDjYE3x9JJX11a9pv3cP-c",
+  authDomain: "mns-crm-marchi.firebaseapp.com",
+  projectId: "mns-crm-marchi",
+  storageBucket: "mns-crm-marchi.firebasestorage.app",
+  messagingSenderId: "836576469513",
+  appId: "1:836576469513:web:19d5cc836c33967b980ed8"
         };
 
         // Inizializza Firebase
@@ -885,7 +885,13 @@
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progressPercent}%"></div>
                         </div>
-                        <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                        <div style="margin-top: 15px;">
+                            <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                            <button class="btn" style="margin-left: 10px; padding: 5px 15px; font-size: 14px;" 
+                                    onclick="editClient('${client.id}')">✏️ Modifica</button>
+                            <button class="btn btn-danger" style="margin-left: 5px; padding: 5px 15px; font-size: 14px;" 
+                                    onclick="deleteClient('${client.id}', '${client.clientName}')">🗑️ Elimina</button>
+                        </div>
                     </div>
                 `;
             });
@@ -932,6 +938,8 @@
                             <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
                             <button class="btn" style="margin-left: 10px; padding: 5px 15px; font-size: 14px;" 
                                     onclick="editClient('${client.id}')">✏️ Modifica</button>
+                            <button class="btn btn-danger" style="margin-left: 5px; padding: 5px 15px; font-size: 14px;" 
+                                    onclick="deleteClient('${client.id}', '${client.clientName}')">🗑️ Elimina</button>
                         </div>
                     </div>
                 `;
@@ -1021,6 +1029,32 @@
                 alert('✅ Scadenza completata!');
             } catch (error) {
                 alert('❌ Errore nell\'aggiornamento.');
+                console.error(error);
+            }
+        };
+
+        // Elimina cliente
+        window.deleteClient = async function(clientId, clientName) {
+            if (!confirm(`⚠️ Sei sicuro di voler eliminare il cliente "${clientName}"?\n\nQuesta azione eliminerà anche tutte le scadenze associate e NON può essere annullata.`)) {
+                return;
+            }
+
+            try {
+                // Elimina il cliente
+                await deleteDoc(doc(db, 'clients', clientId));
+                
+                // Elimina tutte le scadenze associate
+                const deadlinesQuery = query(collection(db, 'deadlines'), where('clientId', '==', clientId));
+                const deadlinesSnapshot = await getDocs(deadlinesQuery);
+                
+                const deletePromises = deadlinesSnapshot.docs.map(deadlineDoc => 
+                    deleteDoc(doc(db, 'deadlines', deadlineDoc.id))
+                );
+                await Promise.all(deletePromises);
+                
+                alert('✅ Cliente eliminato con successo!');
+            } catch (error) {
+                alert('❌ Errore nell\'eliminazione. Riprova.');
                 console.error(error);
             }
         };
