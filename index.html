@@ -470,9 +470,10 @@
 
             <!-- New Client Section -->
             <div id="new-client" class="section">
-                <h2 style="margin-bottom: 30px; color: #2c3e50;">Nuovo Cliente - Fase 1: Raccolta Informazioni</h2>
+                <h2 id="clientFormTitle" style="margin-bottom: 30px; color: #2c3e50;">Nuovo Cliente - Fase 1: Raccolta Informazioni</h2>
                 
                 <form id="clientForm">
+                    <input type="hidden" id="clientId" value="">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="clientName">Denominazione Titolare *</label>
@@ -546,7 +547,10 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-success" id="saveClientBtn">💾 Salva Cliente e Inizia Processo</button>
+                    <div style="display: flex; gap: 15px;">
+                        <button type="submit" class="btn btn-success" id="saveClientBtn">💾 Salva Cliente e Inizia Processo</button>
+                        <button type="button" class="btn" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Annulla</button>
+                    </div>
                 </form>
             </div>
 
@@ -643,33 +647,42 @@
                     <strong>📁 Moduli Standard MNS:</strong> Scheda Cliente, Rapporto Ricerca, Report di Deposito
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Categoria Documento</label>
-                        <select>
-                            <option>Scheda Cliente</option>
-                            <option>Rapporto di Ricerca</option>
-                            <option>Report di Deposito</option>
-                            <option>Corrispondenza EUIPO</option>
-                            <option>Certificati</option>
-                            <option>Contratti</option>
-                        </select>
+                <form id="documentForm" style="margin-bottom: 30px;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="docCategory">Categoria Documento *</label>
+                            <select id="docCategory" required>
+                                <option value="">Seleziona categoria</option>
+                                <option value="Scheda Cliente">Scheda Cliente</option>
+                                <option value="Rapporto di Ricerca">Rapporto di Ricerca</option>
+                                <option value="Report di Deposito">Report di Deposito</option>
+                                <option value="Corrispondenza EUIPO">Corrispondenza EUIPO</option>
+                                <option value="Certificati">Certificati</option>
+                                <option value="Contratti">Contratti</option>
+                                <option value="Altri">Altri</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="docClient">Cliente *</label>
+                            <select id="docClient" required>
+                                <option value="">Seleziona cliente...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="docFile">Carica Documento *</label>
+                            <input type="file" id="docFile" required accept=".pdf,.doc,.docx,.jpg,.png,.xlsx,.xls">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="docNotes">Note</label>
+                            <textarea id="docNotes" placeholder="Note aggiuntive sul documento"></textarea>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Cliente</label>
-                        <select id="docClientSelect">
-                            <option>Seleziona cliente...</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Carica Documento</label>
-                        <input type="file" accept=".pdf,.doc,.docx,.jpg,.png">
-                    </div>
-                </div>
-                
-                <button class="btn">📤 Carica Documento</button>
+                    <button type="submit" class="btn btn-success" id="uploadDocBtn">📤 Carica Documento</button>
+                </form>
                 
                 <h3 style="margin: 30px 0 20px; color: #2c3e50;">Documenti Recenti</h3>
                 <div id="documentsList">
@@ -683,6 +696,57 @@
                 
                 <div id="deadlineWarning" class="alert alert-warning" style="display: none;">
                     <strong>⚠️ Scadenze Imminenti:</strong> <span id="deadlineWarningText"></span>
+                </div>
+                
+                <!-- Form per aggiungere nuova scadenza -->
+                <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: 15px; margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50;">➕ Aggiungi Nuova Scadenza</h3>
+                    <form id="deadlineForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="deadlineClient">Cliente *</label>
+                                <select id="deadlineClient" required>
+                                    <option value="">Seleziona cliente...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deadlineType">Tipo Scadenza *</label>
+                                <select id="deadlineType" required>
+                                    <option value="">Seleziona tipo</option>
+                                    <option value="Risposta EUIPO">Risposta EUIPO</option>
+                                    <option value="Deposito Documenti">Deposito Documenti</option>
+                                    <option value="Rinnovo Registrazione">Rinnovo Registrazione</option>
+                                    <option value="Pagamento Tasse">Pagamento Tasse</option>
+                                    <option value="Controllo Pubblicazione">Controllo Pubblicazione</option>
+                                    <option value="Scadenza Opposizione">Scadenza Opposizione</option>
+                                    <option value="Altro">Altro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deadlineDate">Data Scadenza *</label>
+                                <input type="date" id="deadlineDate" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deadlinePriority">Priorità *</label>
+                                <select id="deadlinePriority" required>
+                                    <option value="">Seleziona priorità</option>
+                                    <option value="high">Alta</option>
+                                    <option value="medium">Media</option>
+                                    <option value="low">Bassa</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deadlineNotes">Note</label>
+                                <textarea id="deadlineNotes" placeholder="Note aggiuntive sulla scadenza"></textarea>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success" id="addDeadlineBtn">⏰ Aggiungi Scadenza</button>
+                    </form>
                 </div>
                 
                 <div class="tabs">
@@ -721,6 +785,7 @@
         // Variabili globali
         let clients = [];
         let deadlines = [];
+        let documents = [];
         let currentClientFilter = 'all';
         let currentDeadlineFilter = 'upcoming';
 
@@ -757,6 +822,70 @@
             }
         }
 
+        // Carica i documenti da Firebase
+        async function loadDocuments() {
+            try {
+                const snapshot = await getDocs(collection(db, 'documents'));
+                documents = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                if (document.getElementById('documents').classList.contains('active')) {
+                    displayDocuments();
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento documenti:', error);
+            }
+        }
+
+        // Salva documento in Firebase
+        async function saveDocument(documentData) {
+            try {
+                const docRef = await addDoc(collection(db, 'documents'), {
+                    ...documentData,
+                    createdDate: new Date().toISOString()
+                });
+                return docRef.id;
+            } catch (error) {
+                console.error('Errore nel salvataggio documento:', error);
+                throw error;
+            }
+        }
+
+        // Mostra documenti
+        function displayDocuments() {
+            const documentsList = document.getElementById('documentsList');
+            if (!documentsList) return;
+
+            if (documents.length === 0) {
+                documentsList.innerHTML = '<div class="alert alert-info">Nessun documento caricato.</div>';
+                return;
+            }
+
+            documentsList.innerHTML = '';
+            
+            documents.slice(0, 10).forEach(document => {
+                documentsList.innerHTML += `
+                    <div class="alert alert-info" style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>📄 ${document.fileName}</strong><br>
+                                <strong>Cliente:</strong> ${document.clientName}<br>
+                                <strong>Categoria:</strong> ${document.category}<br>
+                                <strong>Data:</strong> ${formatDate(document.createdDate)}
+                            </div>
+                            <div>
+                                <button class="btn btn-danger" style="padding: 8px 16px; font-size: 14px;" 
+                                        onclick="deleteDocument('${document.id}', '${document.fileName}')">
+                                    🗑️ Elimina
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         // Carica le scadenze da Firebase
         async function loadDeadlines() {
             try {
@@ -773,6 +902,111 @@
             }
         }
 
+        // Crea nuova scadenza
+        async function createDeadline(deadlineData) {
+            try {
+                const docRef = await addDoc(collection(db, 'deadlines'), {
+                    ...deadlineData,
+                    createdDate: new Date().toISOString(),
+                    completed: false
+                });
+                return docRef.id;
+            } catch (error) {
+                console.error('Errore nella creazione scadenza:', error);
+                throw error;
+            }
+        }
+
+        // Gestione form documenti
+        document.getElementById('documentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const uploadBtn = document.getElementById('uploadDocBtn');
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '📤 Caricando...';
+            
+            try {
+                const fileInput = document.getElementById('docFile');
+                const file = fileInput.files[0];
+                
+                if (!file) {
+                    alert('❌ Seleziona un file da caricare.');
+                    return;
+                }
+                
+                const documentData = {
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileType: file.type,
+                    category: document.getElementById('docCategory').value,
+                    clientName: document.getElementById('docClient').value,
+                    clientId: document.getElementById('docClient').selectedOptions[0]?.getAttribute('data-id') || '',
+                    notes: document.getElementById('docNotes').value
+                };
+                
+                // Nota: in una implementazione reale, qui caricheresti il file su Firebase Storage
+                // Per ora salviamo solo i metadati
+                await saveDocument(documentData);
+                
+                alert('✅ Documento caricato con successo!');
+                e.target.reset();
+                
+            } catch (error) {
+                alert('❌ Errore nel caricamento del documento. Riprova.');
+                console.error(error);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📤 Carica Documento';
+            }
+        });
+
+        // Gestione form scadenze
+        document.getElementById('deadlineForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const addBtn = document.getElementById('addDeadlineBtn');
+            addBtn.disabled = true;
+            addBtn.textContent = '⏰ Aggiungendo...';
+            
+            try {
+                const deadlineData = {
+                    client: document.getElementById('deadlineClient').value,
+                    clientId: document.getElementById('deadlineClient').selectedOptions[0]?.getAttribute('data-id') || '',
+                    type: document.getElementById('deadlineType').value,
+                    date: document.getElementById('deadlineDate').value,
+                    priority: document.getElementById('deadlinePriority').value,
+                    notes: document.getElementById('deadlineNotes').value
+                };
+                
+                await createDeadline(deadlineData);
+                
+                alert('✅ Scadenza aggiunta con successo!');
+                e.target.reset();
+                
+            } catch (error) {
+                alert('❌ Errore nell\'aggiunta della scadenza. Riprova.');
+                console.error(error);
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = '⏰ Aggiungi Scadenza';
+            }
+        });
+
+        // Elimina documento
+        window.deleteDocument = async function(documentId, fileName) {
+            if (!confirm(`⚠️ Sei sicuro di voler eliminare il documento "${fileName}"?`)) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, 'documents', documentId));
+                alert('✅ Documento eliminato con successo!');
+            } catch (error) {
+                alert('❌ Errore nell\'eliminazione del documento.');
+                console.error(error);
+            }
+        };
+
         // Listener in tempo reale per i clienti
         function setupRealtimeListeners() {
             const clientsQuery = query(collection(db, 'clients'), orderBy('createdDate', 'desc'));
@@ -783,6 +1017,7 @@
                 }));
                 updateStats();
                 loadDashboard();
+                populateClientSelectors();
                 if (document.getElementById('clients').classList.contains('active')) {
                     displayClients();
                 }
@@ -800,6 +1035,44 @@
                 }));
                 if (document.getElementById('deadlines').classList.contains('active')) {
                     displayDeadlines();
+                }
+            });
+
+            const documentsQuery = query(collection(db, 'documents'));
+            onSnapshot(documentsQuery, (snapshot) => {
+                documents = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                if (document.getElementById('documents').classList.contains('active')) {
+                    displayDocuments();
+                }
+            });
+        }
+
+        // Popola i selettori di clienti
+        function populateClientSelectors() {
+            const selectors = ['docClient', 'deadlineClient'];
+            
+            selectors.forEach(selectorId => {
+                const selector = document.getElementById(selectorId);
+                if (selector) {
+                    // Salva la selezione corrente
+                    const currentValue = selector.value;
+                    
+                    // Pulisci e ripopola
+                    selector.innerHTML = '<option value="">Seleziona cliente...</option>';
+                    
+                    clients.forEach(client => {
+                        const option = document.createElement('option');
+                        option.value = client.clientName;
+                        option.setAttribute('data-id', client.id);
+                        option.textContent = `${client.clientName} (${client.trademarkName || 'N/A'})`;
+                        selector.appendChild(option);
+                    });
+                    
+                    // Ripristina la selezione
+                    selector.value = currentValue;
                 }
             });
         }
@@ -1003,7 +1276,11 @@
             
             const saveBtn = document.getElementById('saveClientBtn');
             saveBtn.disabled = true;
-            saveBtn.textContent = '💾 Salvando...';
+            
+            const clientId = document.getElementById('clientId').value;
+            const isEditing = !!clientId;
+            
+            saveBtn.textContent = isEditing ? '💾 Aggiornando...' : '💾 Salvando...';
             
             try {
                 // Raccoglie i dati manualmente dai campi
@@ -1021,20 +1298,73 @@
                     assignedTo: document.getElementById('assignedTo').value
                 };
                 
-                await saveClient(clientData);
+                if (isEditing) {
+                    // Aggiorna cliente esistente
+                    await updateDoc(doc(db, 'clients', clientId), clientData);
+                    alert('✅ Cliente aggiornato con successo!');
+                } else {
+                    // Crea nuovo cliente
+                    await saveClient(clientData);
+                    alert('✅ Cliente salvato con successo! Processo EUTM avviato.');
+                }
                 
-                alert('✅ Cliente salvato con successo! Processo EUTM avviato.');
-                e.target.reset();
+                // Reset del form e torna alla modalità "nuovo"
+                resetForm();
                 showSection('dashboard');
                 
             } catch (error) {
-                alert('❌ Errore nel salvataggio. Riprova.');
+                alert(isEditing ? '❌ Errore nell\'aggiornamento. Riprova.' : '❌ Errore nel salvataggio. Riprova.');
                 console.error(error);
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = '💾 Salva Cliente e Inizia Processo';
             }
         });
+
+        // Reset form alla modalità "nuovo cliente"
+        function resetForm() {
+            document.getElementById('clientForm').reset();
+            document.getElementById('clientId').value = '';
+            document.getElementById('clientFormTitle').textContent = 'Nuovo Cliente - Fase 1: Raccolta Informazioni';
+            document.getElementById('saveClientBtn').textContent = '💾 Salva Cliente e Inizia Processo';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // Annulla modifica
+        window.cancelEdit = function() {
+            resetForm();
+        };
+
+        // Modifica cliente
+        window.editClient = function(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) {
+                alert('❌ Cliente non trovato!');
+                return;
+            }
+
+            // Popola il form con i dati del cliente
+            document.getElementById('clientId').value = clientId;
+            document.getElementById('clientName').value = client.clientName || '';
+            document.getElementById('legalAddress').value = client.legalAddress || '';
+            document.getElementById('taxCode').value = client.taxCode || '';
+            document.getElementById('trademarkType').value = client.trademarkType || '';
+            document.getElementById('trademarkName').value = client.trademarkName || '';
+            document.getElementById('businessSectors').value = client.businessSectors || '';
+            document.getElementById('priority').value = client.priority || '';
+            document.getElementById('contactEmail').value = client.contactEmail || '';
+            document.getElementById('contactPhone').value = client.contactPhone || '';
+            document.getElementById('notes').value = client.notes || '';
+            document.getElementById('assignedTo').value = client.assignedTo || '';
+
+            // Cambia interfaccia in modalità modifica
+            document.getElementById('clientFormTitle').textContent = `Modifica Cliente: ${client.clientName || 'Senza nome'}`;
+            document.getElementById('saveClientBtn').textContent = '💾 Aggiorna Cliente';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+
+            // Vai alla sezione nuovo cliente (che ora è in modalità modifica)
+            showSection('new-client');
+        };
 
         // Completa scadenza
         window.completeDeadline = async function(deadlineId) {
@@ -1089,12 +1419,19 @@
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
             
+            // Reset form quando si va su "Nuovo Cliente" dal menu
+            if (sectionId === 'new-client') {
+                resetForm();
+            }
+            
             if (sectionId === 'clients') {
                 displayClients();
             } else if (sectionId === 'dashboard') {
                 loadDashboard();
             } else if (sectionId === 'deadlines') {
                 displayDeadlines();
+            } else if (sectionId === 'documents') {
+                displayDocuments();
             }
         };
 
@@ -1116,10 +1453,6 @@
             alert(`Dettagli fase ${step} - Funzione da implementare`);
         };
 
-        window.editClient = function(clientId) {
-            alert(`Modifica cliente ID: ${clientId} - Funzione da implementare`);
-        };
-
         window.formatDate = function(dateString) {
             return new Date(dateString).toLocaleDateString('it-IT');
         };
@@ -1130,6 +1463,7 @@
             setupRealtimeListeners();
             loadClients();
             loadDeadlines();
+            loadDocuments();
         });
     </script>
 </body>
