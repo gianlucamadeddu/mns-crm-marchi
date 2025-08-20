@@ -837,8 +837,11 @@
         // Aggiorna statistiche
         function updateStats() {
             const totalClients = clients.length;
-            const activeApplications = clients.filter(c => c.status === 'active' || c.status === 'in-progress').length;
-            const completedApplications = clients.filter(c => c.status === 'completed').length;
+            const activeApplications = clients.filter(c => {
+                const status = c.status || 'active';
+                return status === 'active' || status === 'in-progress';
+            }).length;
+            const completedApplications = clients.filter(c => (c.status || 'active') === 'completed').length;
             const pendingDeadlines = deadlines.filter(d => !d.completed && new Date(d.date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)).length;
 
             document.getElementById('totalClients').textContent = totalClients;
@@ -869,28 +872,29 @@
             recentApplications.innerHTML = '';
             
             clients.slice(0, 3).forEach(client => {
-                const progressPercent = (client.phase / 9) * 100;
-                const statusClass = client.status === 'completed' ? 'status-completed' : 
-                                  client.status === 'active' || client.status === 'in-progress' ? 'status-progress' : 'status-pending';
+                const progressPercent = ((client.phase || 1) / 9) * 100;
+                const status = client.status || 'active';
+                const statusClass = status === 'completed' ? 'status-completed' : 
+                                  (status === 'active' || status === 'in-progress') ? 'status-progress' : 'status-pending';
                 
                 recentApplications.innerHTML += `
                     <div class="client-card">
-                        <div class="client-name">${client.clientName}</div>
+                        <div class="client-name">${client.clientName || 'Nome non disponibile'}</div>
                         <div class="client-info">
-                            <strong>Marchio:</strong> ${client.trademarkName}<br>
-                            <strong>Email:</strong> ${client.contactEmail}<br>
-                            <strong>Fase:</strong> ${client.phase}/9<br>
-                            <strong>Assegnato a:</strong> ${client.assignedTo}
+                            <strong>Marchio:</strong> ${client.trademarkName || 'N/A'}<br>
+                            <strong>Email:</strong> ${client.contactEmail || 'N/A'}<br>
+                            <strong>Fase:</strong> ${client.phase || 1}/9<br>
+                            <strong>Assegnato a:</strong> ${client.assignedTo || 'N/A'}
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progressPercent}%"></div>
                         </div>
                         <div style="margin-top: 15px;">
-                            <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                            <div class="status-badge ${statusClass}">${status.toUpperCase()}</div>
                             <button class="btn" style="margin-left: 10px; padding: 5px 15px; font-size: 14px;" 
                                     onclick="editClient('${client.id}')">✏️ Modifica</button>
                             <button class="btn btn-danger" style="margin-left: 5px; padding: 5px 15px; font-size: 14px;" 
-                                    onclick="deleteClient('${client.id}', '${client.clientName}')">🗑️ Elimina</button>
+                                    onclick="deleteClient('${client.id}', '${client.clientName || 'Cliente'}')">🗑️ Elimina</button>
                         </div>
                     </div>
                 `;
@@ -904,9 +908,9 @@
 
             let filteredClients = clients;
             if (currentClientFilter === 'active') {
-                filteredClients = clients.filter(c => c.status === 'active' || c.status === 'in-progress');
+                filteredClients = clients.filter(c => (c.status || 'active') === 'active' || (c.status || 'active') === 'in-progress');
             } else if (currentClientFilter === 'completed') {
-                filteredClients = clients.filter(c => c.status === 'completed');
+                filteredClients = clients.filter(c => (c.status || 'active') === 'completed');
             }
 
             if (filteredClients.length === 0) {
@@ -917,29 +921,30 @@
             clientsList.innerHTML = '';
             
             filteredClients.forEach(client => {
-                const progressPercent = (client.phase / 9) * 100;
-                const statusClass = client.status === 'completed' ? 'status-completed' : 
-                                  client.status === 'active' || client.status === 'in-progress' ? 'status-progress' : 'status-pending';
+                const progressPercent = ((client.phase || 1) / 9) * 100;
+                const status = client.status || 'active';
+                const statusClass = status === 'completed' ? 'status-completed' : 
+                                  (status === 'active' || status === 'in-progress') ? 'status-progress' : 'status-pending';
                 
                 clientsList.innerHTML += `
                     <div class="client-card">
-                        <div class="client-name">${client.clientName}</div>
+                        <div class="client-name">${client.clientName || 'Nome non disponibile'}</div>
                         <div class="client-info">
-                            <strong>Marchio:</strong> ${client.trademarkName}<br>
-                            <strong>Email:</strong> ${client.contactEmail}<br>
-                            <strong>Creato:</strong> ${formatDate(client.createdDate)}<br>
-                            <strong>Assegnato a:</strong> ${client.assignedTo}<br>
-                            <strong>Tipo:</strong> ${client.trademarkType}
+                            <strong>Marchio:</strong> ${client.trademarkName || 'N/A'}<br>
+                            <strong>Email:</strong> ${client.contactEmail || 'N/A'}<br>
+                            <strong>Creato:</strong> ${client.createdDate ? formatDate(client.createdDate) : 'N/A'}<br>
+                            <strong>Assegnato a:</strong> ${client.assignedTo || 'N/A'}<br>
+                            <strong>Tipo:</strong> ${client.trademarkType || 'N/A'}
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progressPercent}%"></div>
                         </div>
                         <div style="margin-top: 15px;">
-                            <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                            <div class="status-badge ${statusClass}">${status.toUpperCase()}</div>
                             <button class="btn" style="margin-left: 10px; padding: 5px 15px; font-size: 14px;" 
                                     onclick="editClient('${client.id}')">✏️ Modifica</button>
                             <button class="btn btn-danger" style="margin-left: 5px; padding: 5px 15px; font-size: 14px;" 
-                                    onclick="deleteClient('${client.id}', '${client.clientName}')">🗑️ Elimina</button>
+                                    onclick="deleteClient('${client.id}', '${client.clientName || 'Cliente'}')">🗑️ Elimina</button>
                         </div>
                     </div>
                 `;
