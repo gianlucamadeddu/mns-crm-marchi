@@ -706,12 +706,12 @@
 
         // ⚠️ SOSTITUIRE QUESTA CONFIGURAZIONE CON QUELLA DEL TUO PROGETTO FIREBASE
         const firebaseConfig = {
-            apiKey: "AIzaSyCT6jtq7cdmXFDjYE3x9JJX11a9pv3cP-c",
-  authDomain: "mns-crm-marchi.firebaseapp.com",
-  projectId: "mns-crm-marchi",
-  storageBucket: "mns-crm-marchi.firebasestorage.app",
-  messagingSenderId: "836576469513",
-  appId: "1:836576469513:web:19d5cc836c33967b980ed8"
+            apiKey: "TUA_API_KEY",
+            authDomain: "TUO_PROJECT_ID.firebaseapp.com",
+            projectId: "TUO_PROJECT_ID",
+            storageBucket: "TUO_PROJECT_ID.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456789"
         };
 
         // Inizializza Firebase
@@ -1001,8 +1001,20 @@
             saveBtn.textContent = '💾 Salvando...';
             
             try {
-                const formData = new FormData(e.target);
-                const clientData = Object.fromEntries(formData);
+                // Raccoglie i dati manualmente dai campi
+                const clientData = {
+                    clientName: document.getElementById('clientName').value,
+                    legalAddress: document.getElementById('legalAddress').value,
+                    taxCode: document.getElementById('taxCode').value,
+                    trademarkType: document.getElementById('trademarkType').value,
+                    trademarkName: document.getElementById('trademarkName').value,
+                    businessSectors: document.getElementById('businessSectors').value,
+                    priority: document.getElementById('priority').value,
+                    contactEmail: document.getElementById('contactEmail').value,
+                    contactPhone: document.getElementById('contactPhone').value,
+                    notes: document.getElementById('notes').value,
+                    assignedTo: document.getElementById('assignedTo').value
+                };
                 
                 await saveClient(clientData);
                 
