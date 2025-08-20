@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNS Group - CRM Marchi EUTM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .nav-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .step-card.completed { border-left-color: #27ae60; }
+        .step-card.in-progress { border-left-color: #f39c12; }
+        .step-card.pending { border-left-color: #95a5a6; }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .step-description {
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-progress {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+
+        .status-pending {
+            background: #f8f9fa;
+            color: #95a5a6;
+        }
+
+        .client-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .client-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .client-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .client-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .client-info {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #3498db;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+
+        .alert-info {
+            background: #e8f4fd;
+            border-left-color: #3498db;
+            color: #2c3e50;
+        }
+
+        .alert-warning {
+            background: #fef9e7;
+            border-left-color: #f39c12;
+            color: #2c3e50;
+        }
+
+        .alert-success {
+            background: #d5f4e6;
+            border-left-color: #27ae60;
+            color: #2c3e50;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .connection-online {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .connection-offline {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">
+        🔄 Connessione...
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ MNS Group</h1>
+            <p>Sistema di Gestione Registrazione Marchi Europei (EUTM)</p>
+        </div>
+
+        <div class="main-nav">
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="showSection('new-client')">➕ Nuovo Cliente</button>
+            <button class="nav-btn" onclick="showSection('clients')">👥 Clienti</button>
+            <button class="nav-btn" onclick="showSection('process')">⚙️ Processo</button>
+            <button class="nav-btn" onclick="showSection('documents')">📁 Documenti</button>
+            <button class="nav-btn" onclick="showSection('deadlines')">⏰ Scadenze</button>
+        </div>
+
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Dashboard</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClients">-</div>
+                        <div class="stat-label">Clienti Totali</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeApplications">-</div>
+                        <div class="stat-label">Domande Attive</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedApplications">-</div>
+                        <div class="stat-label">Registrazioni Completate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingDeadlines">-</div>
+                        <div class="stat-label">Scadenze Imminenti</div>
+                    </div>
+                </div>
+
+                <div id="warningAlert" class="alert alert-warning" style="display: none;">
+                    <strong>⚠️ Attenzione:</strong> <span id="warningText"></span>
+                </div>
+
+                <h3 style="margin: 30px 0 20px; color: #2c3e50;">Domande Recenti</h3>
+                <div class="client-list" id="recentApplications">
+                    <div class="loading">Caricamento...</div>
+                </div>
+            </div>
+
+            <!-- New Client Section -->
+            <div id="new-client" class="section">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Nuovo Cliente - Fase 1: Raccolta Informazioni</h2>
+                
+                <form id="clientForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="clientName">Denominazione Titolare *</label>
+                            <input type="text" id="clientName" required placeholder="Nome società/impresa/privato">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="legalAddress">Sede Legale *</label>
+                            <textarea id="legalAddress" required placeholder="Indirizzo completo"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taxCode">Dati Fiscali *</label>
+                            <input type="text" id="taxCode" required placeholder="Codice fiscale / P.IVA">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trademarkType">Tipo di Marchio *</label>
+                            <select id="trademarkType" required>
+                                <option value="">Seleziona tipo</option>
+                                <option value="denominativo">Denominativo</option>
+                                <option value="figurativo">Figurativo (Logo)</option>
+                                <option value="combinato">Combinato</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trademarkName">Nome/Denominazione Marchio *</label>
+                            <input type="text" id="trademarkName" required placeholder="Nome del marchio">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logoFile">File Grafico (se figurativo)</label>
+                            <input type="file" id="logoFile" accept=".jpg,.png,.pdf">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessSectors">Settori di Attività *</label>
+                            <textarea id="businessSectors" required placeholder="Descrivi i prodotti/servizi da proteggere"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="priority">Priorità da Domande Precedenti</label>
+                            <input type="text" id="priority" placeholder="Numero domanda e data (se < 6 mesi)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactEmail">Email di Contatto *</label>
+                            <input type="email" id="contactEmail" required placeholder="email@cliente.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactPhone">Telefono</label>
+                            <input type="tel" id="contactPhone" placeholder="+39 123 456 7890">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Note Aggiuntive</label>
+                            <textarea id="notes" placeholder="Eventuali note o richieste specifiche"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="assignedTo">Assegnato a *</label>
+                            <select id="assignedTo" required>
+                                <option value="">Seleziona responsabile</option>
+                                <option value="gianluca">Gianluca</option>
+                                <option value="simone">Simone</option>
+                                <option value="andrea">Andrea</option>
+                                <option value="nicola">Nicola</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" id="saveClientBtn">💾 Salva Cliente e Inizia Processo</button>
+                </form>
+            </div>
+
+            <!-- Clients Section -->
+            <div id="clients" class="section">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Gestione Clienti</h2>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="showClientTab('all')">Tutti i Clienti</div>
+                    <div class="tab" onclick="showClientTab('active')">Domande Attive</div>
+                    <div class="tab" onclick="showClientTab('completed')">Completate</div>
+                </div>
+
+                <div class="client-list" id="clientsList">
+                    <div class="loading">Caricamento...</div>
+                </div>
+            </div>
+
+            <!-- Process Section -->
+            <div id="process" class="section">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Fasi del Processo EUTM</h2>
+                
+                <div class="process-steps">
+                    <div class="step-card completed" onclick="showProcessDetail(1)">
+                        <div class="step-number">1️⃣</div>
+                        <div class="step-title">Raccolta Informazioni</div>
+                        <div class="step-description">Acquisizione dati cliente e specifiche del marchio</div>
+                        <div class="status-badge status-completed">Completata</div>
+                    </div>
+                    
+                    <div class="step-card in-progress" onclick="showProcessDetail(2)">
+                        <div class="step-number">2️⃣</div>
+                        <div class="step-title">Verifica Validità</div>
+                        <div class="step-description">Controllo distintività e conformità normativa</div>
+                        <div class="status-badge status-progress">In Corso</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(3)">
+                        <div class="step-number">3️⃣</div>
+                        <div class="step-title">Ricerca Anteriorità</div>
+                        <div class="step-description">Verifica marchi simili su TMview e EUIPO</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(4)">
+                        <div class="step-number">4️⃣</div>
+                        <div class="step-title">Classificazione</div>
+                        <div class="step-description">Definizione classi di Nizza e termini</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(5)">
+                        <div class="step-number">5️⃣</div>
+                        <div class="step-title">Deposito Domanda</div>
+                        <div class="step-description">Preparazione e invio domanda EUIPO</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(6)">
+                        <div class="step-number">6️⃣</div>
+                        <div class="step-title">Esame EUIPO</div>
+                        <div class="step-description">Monitoraggio esame formale e sostanziale</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(7)">
+                        <div class="step-number">7️⃣</div>
+                        <div class="step-title">Pubblicazione</div>
+                        <div class="step-description">Gestione periodo di opposizione (3 mesi)</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(8)">
+                        <div class="step-number">8️⃣</div>
+                        <div class="step-title">Registrazione</div>
+                        <div class="step-description">Ottenimento certificato finale</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                    
+                    <div class="step-card pending" onclick="showProcessDetail(9)">
+                        <div class="step-number">9️⃣</div>
+                        <div class="step-title">Post-Registrazione</div>
+                        <div class="step-description">Gestione rinnovi e sorveglianza</div>
+                        <div class="status-badge status-pending">Da Iniziare</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Section -->
+            <div id="documents" class="section">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Gestione Documenti</h2>
+                
+                <div class="alert alert-info">
+                    <strong>📁 Moduli Standard MNS:</strong> Scheda Cliente, Rapporto Ricerca, Report di Deposito
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Categoria Documento</label>
+                        <select>
+                            <option>Scheda Cliente</option>
+                            <option>Rapporto di Ricerca</option>
+                            <option>Report di Deposito</option>
+                            <option>Corrispondenza EUIPO</option>
+                            <option>Certificati</option>
+                            <option>Contratti</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select id="docClientSelect">
+                            <option>Seleziona cliente...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Carica Documento</label>
+                        <input type="file" accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+                </div>
+                
+                <button class="btn">📤 Carica Documento</button>
+                
+                <h3 style="margin: 30px 0 20px; color: #2c3e50;">Documenti Recenti</h3>
+                <div id="documentsList">
+                    <div class="loading">Caricamento...</div>
+                </div>
+            </div>
+
+            <!-- Deadlines Section -->
+            <div id="deadlines" class="section">
+                <h2 style="margin-bottom: 30px; color: #2c3e50;">Gestione Scadenze</h2>
+                
+                <div id="deadlineWarning" class="alert alert-warning" style="display: none;">
+                    <strong>⚠️ Scadenze Imminenti:</strong> <span id="deadlineWarningText"></span>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="showDeadlineTab('upcoming')">Imminenti</div>
+                    <div class="tab" onclick="showDeadlineTab('all')">Tutte</div>
+                    <div class="tab" onclick="showDeadlineTab('completed')">Completate</div>
+                </div>
+                
+                <div id="deadlinesList">
+                    <div class="loading">Caricamento...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Configurazione Firebase - SOSTITUIRE CON I TUOI DATI
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, orderBy, query, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+        // ⚠️ SOSTITUIRE QUESTA CONFIGURAZIONE CON QUELLA DEL TUO PROGETTO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCT6jtg7cdmXFDjYE3x9JJXl1a9pv3cP-c",
+  authDomain: "mns-crm-marchi.firebaseapp.com",
+  projectId: "mns-crm-marchi",
+  storageBucket: "mns-crm-marchi.firebasestorage.app",
+  messagingSenderId: "836576469513",
+  appId: "1:836576469513:web:19d5cc836c33967b980ed8"
+        };
+
+        // Inizializza Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Variabili globali
+        let clients = [];
+        let deadlines = [];
+        let currentClientFilter = 'all';
+        let currentDeadlineFilter = 'upcoming';
+
+        // Indicatore di connessione
+        function updateConnectionStatus(online) {
+            const status = document.getElementById('connectionStatus');
+            if (online) {
+                status.textContent = '🟢 Online';
+                status.className = 'connection-status connection-online';
+            } else {
+                status.textContent = '🔴 Offline';
+                status.className = 'connection-status connection-offline';
+            }
+        }
+
+        // Carica i clienti da Firebase
+        async function loadClients() {
+            try {
+                const q = query(collection(db, 'clients'), orderBy('createdDate', 'desc'));
+                const snapshot = await getDocs(q);
+                clients = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                updateStats();
+                loadDashboard();
+                if (document.getElementById('clients').classList.contains('active')) {
+                    displayClients();
+                }
+                updateConnectionStatus(true);
+            } catch (error) {
+                console.error('Errore nel caricamento clienti:', error);
+                updateConnectionStatus(false);
+            }
+        }
+
+        // Carica le scadenze da Firebase
+        async function loadDeadlines() {
+            try {
+                const snapshot = await getDocs(collection(db, 'deadlines'));
+                deadlines = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                if (document.getElementById('deadlines').classList.contains('active')) {
+                    displayDeadlines();
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento scadenze:', error);
+            }
+        }
+
+        // Listener in tempo reale per i clienti
+        function setupRealtimeListeners() {
+            const clientsQuery = query(collection(db, 'clients'), orderBy('createdDate', 'desc'));
+            onSnapshot(clientsQuery, (snapshot) => {
+                clients = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                updateStats();
+                loadDashboard();
+                if (document.getElementById('clients').classList.contains('active')) {
+                    displayClients();
+                }
+                updateConnectionStatus(true);
+            }, (error) => {
+                console.error('Errore listener clienti:', error);
+                updateConnectionStatus(false);
+            });
+
+            const deadlinesQuery = query(collection(db, 'deadlines'));
+            onSnapshot(deadlinesQuery, (snapshot) => {
+                deadlines = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                if (document.getElementById('deadlines').classList.contains('active')) {
+                    displayDeadlines();
+                }
+            });
+        }
+
+        // Salva cliente in Firebase
+        async function saveClient(clientData) {
+            try {
+                const docRef = await addDoc(collection(db, 'clients'), {
+                    ...clientData,
+                    createdDate: new Date().toISOString(),
+                    phase: 1,
+                    status: 'active'
+                });
+                
+                // Crea scadenza automatica (es. dopo 12 mesi)
+                const deadline = new Date();
+                deadline.setFullYear(deadline.getFullYear() + 1);
+                
+                await addDoc(collection(db, 'deadlines'), {
+                    clientId: docRef.id,
+                    client: clientData.clientName,
+                    type: 'Rinnovo Registrazione',
+                    date: deadline.toISOString(),
+                    priority: 'medium',
+                    completed: false
+                });
+
+                return docRef.id;
+            } catch (error) {
+                console.error('Errore nel salvataggio:', error);
+                throw error;
+            }
+        }
+
+        // Aggiorna statistiche
+        function updateStats() {
+            const totalClients = clients.length;
+            const activeApplications = clients.filter(c => c.status === 'active' || c.status === 'in-progress').length;
+            const completedApplications = clients.filter(c => c.status === 'completed').length;
+            const pendingDeadlines = deadlines.filter(d => !d.completed && new Date(d.date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)).length;
+
+            document.getElementById('totalClients').textContent = totalClients;
+            document.getElementById('activeApplications').textContent = activeApplications;
+            document.getElementById('completedApplications').textContent = completedApplications;
+            document.getElementById('pendingDeadlines').textContent = pendingDeadlines;
+
+            // Mostra avviso scadenze
+            const warningAlert = document.getElementById('warningAlert');
+            if (pendingDeadlines > 0) {
+                document.getElementById('warningText').textContent = `Ci sono ${pendingDeadlines} scadenze nei prossimi 30 giorni.`;
+                warningAlert.style.display = 'block';
+            } else {
+                warningAlert.style.display = 'none';
+            }
+        }
+
+        // Carica dashboard
+        function loadDashboard() {
+            const recentApplications = document.getElementById('recentApplications');
+            if (!recentApplications) return;
+
+            if (clients.length === 0) {
+                recentApplications.innerHTML = '<div class="alert alert-info">Nessun cliente presente. Inizia aggiungendo il primo cliente!</div>';
+                return;
+            }
+
+            recentApplications.innerHTML = '';
+            
+            clients.slice(0, 3).forEach(client => {
+                const progressPercent = (client.phase / 9) * 100;
+                const statusClass = client.status === 'completed' ? 'status-completed' : 
+                                  client.status === 'active' || client.status === 'in-progress' ? 'status-progress' : 'status-pending';
+                
+                recentApplications.innerHTML += `
+                    <div class="client-card">
+                        <div class="client-name">${client.clientName}</div>
+                        <div class="client-info">
+                            <strong>Marchio:</strong> ${client.trademarkName}<br>
+                            <strong>Email:</strong> ${client.contactEmail}<br>
+                            <strong>Fase:</strong> ${client.phase}/9<br>
+                            <strong>Assegnato a:</strong> ${client.assignedTo}
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Mostra clienti
+        function displayClients() {
+            const clientsList = document.getElementById('clientsList');
+            if (!clientsList) return;
+
+            let filteredClients = clients;
+            if (currentClientFilter === 'active') {
+                filteredClients = clients.filter(c => c.status === 'active' || c.status === 'in-progress');
+            } else if (currentClientFilter === 'completed') {
+                filteredClients = clients.filter(c => c.status === 'completed');
+            }
+
+            if (filteredClients.length === 0) {
+                clientsList.innerHTML = '<div class="alert alert-info">Nessun cliente in questa categoria.</div>';
+                return;
+            }
+
+            clientsList.innerHTML = '';
+            
+            filteredClients.forEach(client => {
+                const progressPercent = (client.phase / 9) * 100;
+                const statusClass = client.status === 'completed' ? 'status-completed' : 
+                                  client.status === 'active' || client.status === 'in-progress' ? 'status-progress' : 'status-pending';
+                
+                clientsList.innerHTML += `
+                    <div class="client-card">
+                        <div class="client-name">${client.clientName}</div>
+                        <div class="client-info">
+                            <strong>Marchio:</strong> ${client.trademarkName}<br>
+                            <strong>Email:</strong> ${client.contactEmail}<br>
+                            <strong>Creato:</strong> ${formatDate(client.createdDate)}<br>
+                            <strong>Assegnato a:</strong> ${client.assignedTo}<br>
+                            <strong>Tipo:</strong> ${client.trademarkType}
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div class="status-badge ${statusClass}">${client.status.toUpperCase()}</div>
+                            <button class="btn" style="margin-left: 10px; padding: 5px 15px; font-size: 14px;" 
+                                    onclick="editClient('${client.id}')">✏️ Modifica</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Mostra scadenze
+        function displayDeadlines() {
+            const deadlinesList = document.getElementById('deadlinesList');
+            if (!deadlinesList) return;
+
+            let filteredDeadlines = deadlines;
+            if (currentDeadlineFilter === 'upcoming') {
+                filteredDeadlines = deadlines.filter(d => !d.completed && new Date(d.date) >= new Date());
+            } else if (currentDeadlineFilter === 'completed') {
+                filteredDeadlines = deadlines.filter(d => d.completed);
+            }
+
+            if (filteredDeadlines.length === 0) {
+                deadlinesList.innerHTML = '<div class="alert alert-info">Nessuna scadenza in questa categoria.</div>';
+                return;
+            }
+
+            deadlinesList.innerHTML = '';
+            
+            filteredDeadlines.forEach(deadline => {
+                const isUrgent = new Date(deadline.date) - new Date() < 7 * 24 * 60 * 60 * 1000;
+                const alertClass = isUrgent ? 'alert-warning' : 'alert-info';
+                
+                deadlinesList.innerHTML += `
+                    <div class="alert ${alertClass}" style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${deadline.client}</strong><br>
+                                ${deadline.type} - ${formatDate(deadline.date)}
+                            </div>
+                            <div>
+                                <span class="status-badge ${deadline.priority === 'high' ? 'status-warning' : 'status-progress'}">
+                                    ${deadline.priority.toUpperCase()}
+                                </span>
+                                ${!deadline.completed ? `
+                                <button class="btn" style="margin-left: 10px; padding: 8px 16px; font-size: 14px;" 
+                                        onclick="completeDeadline('${deadline.id}')">
+                                    ✓ Completa
+                                </button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Gestione form nuovo cliente
+        document.getElementById('clientForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const saveBtn = document.getElementById('saveClientBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '💾 Salvando...';
+            
+            try {
+                const formData = new FormData(e.target);
+                const clientData = Object.fromEntries(formData);
+                
+                await saveClient(clientData);
+                
+                alert('✅ Cliente salvato con successo! Processo EUTM avviato.');
+                e.target.reset();
+                showSection('dashboard');
+                
+            } catch (error) {
+                alert('❌ Errore nel salvataggio. Riprova.');
+                console.error(error);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Salva Cliente e Inizia Processo';
+            }
+        });
+
+        // Completa scadenza
+        window.completeDeadline = async function(deadlineId) {
+            try {
+                await updateDoc(doc(db, 'deadlines', deadlineId), {
+                    completed: true,
+                    completedDate: new Date().toISOString()
+                });
+                alert('✅ Scadenza completata!');
+            } catch (error) {
+                alert('❌ Errore nell\'aggiornamento.');
+                console.error(error);
+            }
+        };
+
+        // Funzioni globali per la navigazione
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionId === 'clients') {
+                displayClients();
+            } else if (sectionId === 'dashboard') {
+                loadDashboard();
+            } else if (sectionId === 'deadlines') {
+                displayDeadlines();
+            }
+        };
+
+        window.showClientTab = function(tab) {
+            currentClientFilter = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            displayClients();
+        };
+
+        window.showDeadlineTab = function(tab) {
+            currentDeadlineFilter = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            displayDeadlines();
+        };
+
+        window.showProcessDetail = function(step) {
+            alert(`Dettagli fase ${step} - Funzione da implementare`);
+        };
+
+        window.editClient = function(clientId) {
+            alert(`Modifica cliente ID: ${clientId} - Funzione da implementare`);
+        };
+
+        window.formatDate = function(dateString) {
+            return new Date(dateString).toLocaleDateString('it-IT');
+        };
+
+        // Inizializza l'app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateConnectionStatus(false);
+            setupRealtimeListeners();
+            loadClients();
+            loadDeadlines();
+        });
+    </script>
+</body>
+</html>
